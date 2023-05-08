@@ -1,34 +1,48 @@
 class SearchSpaceObject():
 
     '''
-    Base class for all classes that have text items that need to be searched for
+    Base class for all objects that are either indexed or searched
     '''
 
     def __init__(self):
         pass
 
-    def preprocess(self, text: list):
+    def preprocess(self, text: list, doStemming: bool = False):
         '''
         Preprocesses the text items in the object
 
         Args:
             text (list): list of text items
+            doStemming (bool): whether to perform stemming or not
 
         Returns:
             list: list of preprocessed text items
         '''
+
+        TODO:
+        # 1. Convert the text to lowercase
+        # 2. Remove all punctuation
+        # 3. Tokenization
+        # 4. Remove all stopwords
+        # 5. Remove all digits
+        # 6. Perform stemming (based on doStemming flag)
         pass
 
-    def vectorize(self, text: list):
+    def vectorize(self, text: list, engine):
         '''
         Vectorizes the text items in the object
 
         Args:
             text (list): list of text items
+            engine (instance): vectorizer object, e.g. BERT
 
         Returns:
             list: list of vectorized text items
         '''
+
+        TODO:
+            # 1. Vectorize the text items using the vectorizer object
+            # 2. Return the vectorized text items
         pass
 
 

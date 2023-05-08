@@ -1,4 +1,37 @@
 
+import os
+import json
+import csv
+from collections import defaultdict
+class SearchSpaceObject():
+
+    '''
+    Base class for all classes that have text items that need to be searched for
+    '''
+
+    def __init__(self):
+        pass
+
+    def preprocess(self, text: list):
+        '''
+        Preprocesses the text items in the object
+        Args:
+            text (list): list of text items
+        Returns:
+            list: list of preprocessed text items
+        '''
+        pass
+
+    def vectorize(self, text: list):
+        '''
+        Vectorizes the text items in the object
+        Args:
+            text (list): list of text items
+        Returns:
+            list: list of vectorized text items
+        '''
+        pass
+
 class Utterance():
 
     '''
@@ -46,12 +79,14 @@ class PodcastShow():
         self.show_description = show_description
         self.publisher = publisher
         self.show_filename_prefix = show_filename_prefix
+        self.listEpisodes= []
 
     def __str__(self):
         print(f"Show URI: {self.show_uri}")
         print(f"Show Name: {self.show_name}")
         print(f"Show Description: {self.show_description}")
         print(f"Publisher: {self.publisher}")
+        return "hi"
 
 
 class PodcastEpisode():
@@ -89,6 +124,7 @@ class PodcastEpisode():
         print(f"Episode Name: {self.episode_name}")
         print(f"Episode Description: {self.episode_description}")
         print(f"Duration: {self.duration} mins")
+        return "hi"
 
 
 def download_data(data_dir: str):
@@ -108,7 +144,8 @@ def download_data(data_dir: str):
     # 3. Move the data to data_dir
 
 
-def read_data(data_dir):
+
+def read_data(data_dir = "/Users/ammarpl/Downloads/info_ret/podcasts-no-audio-13GB"):
 
     '''
     Reads the data from data_dir and returns a list of PodcastShow and PodcastEpisode objects
@@ -120,9 +157,65 @@ def read_data(data_dir):
         listShows (list): list of PodcastsShow objects
     '''
 
-    # TODO:
+    metadata_file = os.path.join(data_dir, 'metadata.tsv')
+    shows_dict = {}
+    episodes_dict = {}
+
     # 1. Read the data from data_dir
     # 2. Create a list of PodcastShow and PodcastEpisode objects from metadata.tsv
-    # 3. Create a list of Utterance objects from the JSON files
-    # 4. Add the list of Utterance objects to the corresponding PodcastEpisode object
+    with open(metadata_file, 'r', encoding='utf-8') as tsvfile:
+        reader = csv.reader(tsvfile, delimiter='\t')
+        next(reader)  # Skip header row
+        for row in reader:
+            show_uri, show_name, show_description, publisher, language, rss_link, episode_uri, episode_name, episode_description, duration, show_filename_prefix, episode_filename_prefix = row
+
+            if show_uri not in shows_dict:
+                podcast_show = PodcastShow(show_uri, show_name, show_description, publisher, show_filename_prefix)
+                shows_dict[show_uri] = podcast_show
+
+            podcast_episode = PodcastEpisode(show_uri, episode_uri, episode_name, episode_description, float(duration), episode_filename_prefix)
+            episodes_dict[episode_filename_prefix] = podcast_episode
+
+
+    for episode_filename_prefix, episode in episodes_dict.items():
+        show_dir = os.path.join(data_dir, 'spotify-podcasts-2020/podcasts-transcripts', episode.show_uri[13], episode.show_uri[14], "show_"+episode.show_uri[13:])
+        json_file_path = os.path.join(show_dir, f'{episode_filename_prefix}.json')
+
+        if not os.path.exists(json_file_path) or episode.show_uri[13]!='3' or episode.show_uri[14]!='0':
+            continue
+        # print("exists")
+        with open(json_file_path, 'r', encoding='utf-8') as json_file:
+            json_data = json.load(json_file)
+            # 3. Create a list of Utterance objects from the JSON files
+            utterances = []
+
+            for ep in json_data['results']:
+                if ep['alternatives'] and ep['alternatives'][0].get('transcript'):
+                    transcript = ep['alternatives'][0]['transcript']
+                    timestamp = ep['alternatives'][0]['words'][0]['startTime'][:-1]
+                    speaker = ''
+
+                    utterance = Utterance(transcript, timestamp, speaker)
+                    utterances.append(utterance)
+            # 4. Add the list of Utterance objects to the corresponding PodcastEpisode object
+            episode.listUtterances = utterances
+            shows_dict[episode.show_uri].listEpisodes.append(episode)
+
     # 5. Return the list of PodcastShow objects
+    return list(shows_dict.values())
+
+    # TODO:
+
+
+#Example usage of read data:
+listShows = read_data()
+for i in range(len(listShows)):
+    if listShows[i].listEpisodes != []:
+        print(i)
+        for j in range(len(listShows[i].listEpisodes)):
+            print(listShows[i].listEpisodes[j].episode_name)
+            print(listShows[i].listEpisodes[j].listUtterances[0].text)
+
+
+
+

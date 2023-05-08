@@ -1,15 +1,50 @@
+class SearchSpaceObject():
 
-class Utterance():
+    '''
+    Base class for all classes that have text items that need to be searched for
+    '''
+
+    def __init__(self):
+        pass
+
+    def preprocess(self, text: list):
+        '''
+        Preprocesses the text items in the object
+
+        Args:
+            text (list): list of text items
+
+        Returns:
+            list: list of preprocessed text items
+        '''
+        pass
+
+    def vectorize(self, text: list):
+        '''
+        Vectorizes the text items in the object
+
+        Args:
+            text (list): list of text items
+
+        Returns:
+            list: list of vectorized text items
+        '''
+        pass
+
+
+class Utterance(SearchSpaceObject):
 
     '''
     Stores information about an utterance, as read from the transcript's JSON file
 
     Attributes:
+        episode_uri: Spotify uri for the episode. e.g. spotify:episode:4vYOibPeC270jJlnRoAVO6
         text: text of the utterance
         timestamp: timestamp of the utterance
         speaker: speaker of the utterance
     '''
 
+    episode_uri: str
     text: str
     timestamp: float
     speaker: str
@@ -20,7 +55,7 @@ class Utterance():
         self.speaker = speaker
 
 
-class PodcastShow():
+class PodcastShow(SearchSpaceObject):
 
     '''
     Stores information about a podcast show, as read from the TSV file
@@ -54,7 +89,7 @@ class PodcastShow():
         print(f"Publisher: {self.publisher}")
 
 
-class PodcastEpisode():
+class PodcastEpisode(SearchSpaceObject):
 
     '''
     Stores information about a podcast episode, as read from the TSV file

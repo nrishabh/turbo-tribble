@@ -1,56 +1,56 @@
 
 import os
 import json
+import string
 import pandas as pd
 from tqdm import tqdm
+from nltk.corpus import stopwords
 
 
 class SearchSpaceObject():
 
     '''
     Base class for all objects that are either indexed or searched
+
+    Attributes:
+        info_vector: vector of items that are searched or indexed with this object
     '''
 
     def __init__(self):
-        pass
+        self.info_vector = None
 
-    def preprocess(self, text: list, doStemming: bool = False):
+    def vectorize(self, text: list, tokenizer: object, model: object):
         '''
-        Preprocesses the text items in the object
+        Preprocesses the text items and returns a vectorized version of the text items
 
         Args:
             text (list): list of text items
-            doStemming (bool): whether to perform stemming or not
+            tokenizer (object): tokenizer object, e.g. transformers.Tokenizer.from_pretrained('bert-base-uncased')
+            model (instance): vectorizer object, e.g. transformers.AutoModel.from_pretrained('bert-base-uncased')
 
         Returns:
-            list: list of preprocessed text items
+            None
         '''
+        text_items = []
 
-        # TODO:
-        # 1. Convert the text to lowercase
-        # 2. Remove all punctuation
-        # 3. Tokenization
-        # 4. Remove all stopwords
-        # 5. Remove all digits
-        # 6. Perform stemming (based on doStemming flag)
-        pass
+        for t in text:
 
-    def vectorize(self, text: list, engine):
-        '''
-        Vectorizes the text items in the object
+            # 1. Tokenization
+            # t = tokenize.sent_tokenize(t)
+            t = tokenizer(t, return_tensors='np')
+            # 2. Convert the t to lowercase
+            t = [item.lower() for item in t]
+            # 3. Remove all punctuation
+            t = t.translate(str.maketrans('', '', string.punctuation))
+            # 4. Remove all stopwords
+            t = [item for item in t if item not in stopwords.words('english')]
+            # 5. Remove all digits
+            t = [item for item in t if not item.isdigit()]
 
-        Args:
-            text (list): list of text items
-            engine (instance): vectorizer object, e.g. BERT
+            text_items += t
 
-        Returns:
-            list: list of vectorized text items
-        '''
-
-        # TODO:
-        # 1. Vectorize the text items using the vectorizer object
-        # 2. Return the vectorized text items
-        pass
+        # 6. Vectorize the text items
+        self.info_vector = model(text_items)
 
 
 class Utterance():
@@ -62,18 +62,18 @@ class Utterance():
         episode_uri: Spotify uri for the episode. e.g. spotify:episode:4vYOibPeC270jJlnRoAVO6
         text: text of the utterance
         timestamp: timestamp of the utterance
-        speaker: speaker of the utterance
     '''
 
     episode_uri: str
     text: str
     timestamp: float
-    speaker: str
 
-    def __init__(self, text: str, timestamp: str, speaker: str):
+    def __init__(self, text: str, timestamp: str):
         self.text = text
         self.timestamp = timestamp
-        self.speaker = speaker
+
+    def vectorize(self, tokenizer: object, model: object):
+        super.vectorize(self.text, tokenizer, model)
 
 
 class PodcastShow(SearchSpaceObject):
@@ -150,6 +150,9 @@ class PodcastEpisode(SearchSpaceObject):
                    + (f"Episode Description: {self.episode_description}")
                    + (f"Duration: {self.duration} mins")
                    + (f"Number of Utterances: {len(self.listUtterances)}"))
+
+    def vectorize(self, tokenizer: object, model: object):
+        super.vectorize([self.episode_name, self.episode_description], tokenizer, model)
 
 
 def download_data(data_dir: str):
@@ -241,27 +244,14 @@ def read_data(data_dir: str, dev_mode: bool = False):
                 if ep['alternatives'] and ep['alternatives'][0].get('transcript'):
                     transcript = ep['alternatives'][0]['transcript']
                     timestamp = ep['alternatives'][0]['words'][0]['startTime'][:-1]
-                    speaker = ''
-                    utterance = Utterance(transcript, timestamp, speaker)
+                    utterance = Utterance(transcript, timestamp)
                     utterances.append(utterance)
 
             episode.listUtterances = utterances
-        
+
     print("Completed reading data.")
     print("Total number of shows: ", len(shows_dict.values()))
     print("Total number of episodes: ", sum([len(show.dictEpisodes.values()) for show in shows_dict.values()]))
     print("Total number of utterances: ", sum([len(episode.listUtterances) for show in shows_dict.values() for episode in show.dictEpisodes.values()]))
 
     return shows_dict
-
-
-if __name__ == '__main__':
-
-    # Example usage of read data:
-    listShows = read_data()
-    for i in range(len(listShows)):
-        if listShows[i].listEpisodes != []:
-            print(i)
-            for j in range(len(listShows[i].listEpisodes)):
-                print(listShows[i].listEpisodes[j].episode_name)
-                print(listShows[i].listEpisodes[j].listUtterances[0].text)

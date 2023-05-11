@@ -1,19 +1,37 @@
-# Spotify Podcast Search
-#TODO: Enter description of project
+# Turbo Tribble
+An information retrieval program for spotify podcasts that uses [open-source embeddings](https://huggingface.co/blog/getting-started-with-embeddings) to encode text into vectors and [faiss](https://github.com/facebookresearch/faiss) to perform similarity search. Inspired from the [TREC Challenge of 2020 and 2021](https://trecpodcasts.github.io/).
 
-**Table of Contents**
-- [Spotify Podcast Search](#spotify-podcast-search)
+## Table of Contents
+- [Turbo Tribble](#turbo-tribble)
+  - [Table of Contents](#table-of-contents)
   - [Install](#install)
-  - [Run](#run)
+  - [Usage](#usage)
   - [Information](#information)
   - [Acknowledgements](#acknowledgements)
-
 
 ## Install
 To install required libraries, run `pip install -r requirements.txt`
 
-## Run
-TODO: Enter instructions to run
+## Usage
+```$ python main.py -h
+usage: main.py [-h] [--gpu GPU] --data_dir DATA_DIR [--model_name MODEL_NAME] --vector_mode VECTOR_MODE     
+               [--data_limit DATA_LIMIT] [--vector_fp VECTOR_FP]
+
+python program to search for spotify podcasts
+
+options:
+  -h, --help            show this help message and exit
+  --gpu GPU             gpu id (default: 0))
+  --data_dir DATA_DIR   data directory (final directory should be spotify-podcasts-2020)
+  --model_name MODEL_NAME
+                        transformer model name (default: bert-base-uncased))
+  --vector_mode VECTOR_MODE
+                        vector mode: [create, load]
+  --data_limit DATA_LIMIT
+                        data limit (default: 100)
+  --vector_fp VECTOR_FP
+                        vector file path (to save if mode=create, to load if mode=load, default: vector.npy)
+```
 
 ## Information
 TODO: Link to project report (and hopefully, demo)

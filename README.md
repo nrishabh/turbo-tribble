@@ -1,5 +1,5 @@
 # Turbo Tribble
-An information retrieval program for spotify podcasts that uses [open-source embeddings](https://huggingface.co/blog/getting-started-with-embeddings) to encode text into vectors and [faiss](https://github.com/facebookresearch/faiss) to perform similarity search. Inspired from the [TREC Challenge of 2020 and 2021](https://trecpodcasts.github.io/).
+An information retrieval program for spotify podcasts that uses [open-source embeddings](https://huggingface.co/blog/getting-started-with-embeddings) to encode text into vectors and [faiss](https://github.com/facebookresearch/faiss) to perform similarity search. Inspired from the [TREC Challenge of 2020 and 2021](https://trecpodcasts.github.io/). Made for our class on Information Retrieval and Web Agents at Johns Hopkins during the Spring 2023 semester.
 
 ## Table of Contents
 - [Turbo Tribble](#turbo-tribble)

@@ -51,6 +51,8 @@ class SearchSpaceObject():
 
         # 6. Vectorize the text items
         tokens = tokenizer(' '.join(text_items), return_tensors='pt')
+        device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        model = model.to(device)
         self.info_vector = model(**tokens).last_hidden_state[0][0].detach().numpy()
 
 

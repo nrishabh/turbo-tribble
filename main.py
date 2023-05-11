@@ -52,13 +52,6 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        '--gpu',
-        type=int,
-        required=False,
-        help='gpu id (default: 0))',
-        default=0
-    )
-    parser.add_argument(
         '--data_dir',
         type=str,
         required=True,

@@ -1,5 +1,5 @@
 # Turbo Tribble
-An information retrieval program for spotify podcasts that uses [open-source embeddings](https://huggingface.co/blog/getting-started-with-embeddings) to encode text into vectors and [faiss](https://github.com/facebookresearch/faiss) to perform similarity search. Inspired from the [TREC Challenge of 2020 and 2021](https://trecpodcasts.github.io/). Made for our class on Information Retrieval and Web Agents at Johns Hopkins during the Spring 2023 semester.
+An information retrieval program for spotify podcasts that uses [open-source embeddings](https://huggingface.co/blog/getting-started-with-embeddings) to encode text into vectors and [faiss](https://github.com/facebookresearch/faiss) to perform similarity search. Inspired from the [TREC Challenge of 2020 and 2021](https://trecpodcasts.github.io/). Made for our class on [Information Retrieval and Web Agents](https://www.cs.jhu.edu/~yarowsky/cs466.html) at Johns Hopkins University during the Spring 2023 semester.
 
 ## Table of Contents
 - [Turbo Tribble](#turbo-tribble)
@@ -13,7 +13,8 @@ An information retrieval program for spotify podcasts that uses [open-source emb
 To install required libraries, run `pip install -r requirements.txt`
 
 ## Usage
-```$ python main.py -h
+```
+$ python main.py -h
 usage: main.py [-h] [--gpu GPU] --data_dir DATA_DIR [--model_name MODEL_NAME] --vector_mode VECTOR_MODE     
                [--data_limit DATA_LIMIT] [--vector_fp VECTOR_FP]
 
@@ -21,7 +22,6 @@ python program to search for spotify podcasts
 
 options:
   -h, --help            show this help message and exit
-  --gpu GPU             gpu id (default: 0))
   --data_dir DATA_DIR   data directory (final directory should be spotify-podcasts-2020)
   --model_name MODEL_NAME
                         transformer model name (default: bert-base-uncased))

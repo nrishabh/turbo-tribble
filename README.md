@@ -15,8 +15,8 @@ To install required libraries, run `pip install -r requirements.txt`
 ## Usage
 ```
 $ python main.py -h
-usage: main.py [-h] [--gpu GPU] --data_dir DATA_DIR [--model_name MODEL_NAME] --vector_mode VECTOR_MODE     
-               [--data_limit DATA_LIMIT] [--vector_fp VECTOR_FP]
+usage: main.py [-h] --data_dir DATA_DIR [--model_name MODEL_NAME] --vector_mode VECTOR_MODE [--vector_fp VECTOR_FP] --query_fp QUERY_FP
+               [--search_mode SEARCH_MODE] [--k K] [--data_limit DATA_LIMIT]
 
 python program to search for spotify podcasts
 
@@ -27,10 +27,14 @@ options:
                         transformer model name (default: bert-base-uncased))
   --vector_mode VECTOR_MODE
                         vector mode: [create, load]
-  --data_limit DATA_LIMIT
-                        data limit (default: 100)
   --vector_fp VECTOR_FP
                         vector file path (to save if mode=create, to load if mode=load, default: vector.npy)
+  --query_fp QUERY_FP   query file path (default: queries.xml)
+  --search_mode SEARCH_MODE
+                        search mode: [nndescent, hierarchical]
+  --k K                 number of results to return (default: 5)
+  --data_limit DATA_LIMIT
+                        data limit (enter -1 for all, default: 100)
 ```
 
 ## Information

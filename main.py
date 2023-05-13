@@ -58,6 +58,16 @@ def main(args):
         s.nndescent_search(listQueries, args.k)
     elif args.search_mode == 'hierarchical':
         s.hierarchical_search(listQueries, args.k)
+    elif args.search_mode == 'linear':
+        s.linear_search(listQueries, args.k)
+    elif args.search_mode == 'kdtree':
+        s.kd_tree_search(listQueries, args.k)
+    elif args.search_mode == 'balltree':
+        s.ball_tree_search(listQueries, args.k)
+    elif args.search_mode == 'annoy':
+        s.annoy_search(listQueries, args.k)
+    elif args.search_mode == 'faiss':
+        s.faiss_search(listQueries, args.k)
 
 
 if __name__ == '__main__':

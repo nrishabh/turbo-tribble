@@ -1,5 +1,5 @@
 # Turbo Tribble
-An information retrieval program for spotify podcasts that uses [open-source embeddings](https://huggingface.co/blog/getting-started-with-embeddings) to encode text into vectors and [faiss](https://github.com/facebookresearch/faiss) to perform similarity search. Inspired from the [TREC Challenge of 2020 and 2021](https://trecpodcasts.github.io/). Made for our class on Information Retrieval and Web Agents at Johns Hopkins during the Spring 2023 semester.
+An information retrieval program for spotify podcasts that uses [open-source embeddings](https://huggingface.co/blog/getting-started-with-embeddings) to encode text into vectors and [faiss](https://github.com/facebookresearch/faiss) to perform similarity search. Inspired from the [TREC Challenge of 2020 and 2021](https://trecpodcasts.github.io/). Made for our class on [Information Retrieval and Web Agents](https://www.cs.jhu.edu/~yarowsky/cs466.html) at Johns Hopkins University during the Spring 2023 semester.
 
 ## Table of Contents
 - [Turbo Tribble](#turbo-tribble)
@@ -13,24 +13,28 @@ An information retrieval program for spotify podcasts that uses [open-source emb
 To install required libraries, run `pip install -r requirements.txt`
 
 ## Usage
-```$ python main.py -h
-usage: main.py [-h] [--gpu GPU] --data_dir DATA_DIR [--model_name MODEL_NAME] --vector_mode VECTOR_MODE     
-               [--data_limit DATA_LIMIT] [--vector_fp VECTOR_FP]
+```
+$ python main.py -h
+usage: main.py [-h] --data_dir DATA_DIR [--model_name MODEL_NAME] --vector_mode VECTOR_MODE [--vector_fp VECTOR_FP] --query_fp QUERY_FP
+               [--search_mode SEARCH_MODE] [--k K] [--data_limit DATA_LIMIT]
 
 python program to search for spotify podcasts
 
 options:
   -h, --help            show this help message and exit
-  --gpu GPU             gpu id (default: 0))
   --data_dir DATA_DIR   data directory (final directory should be spotify-podcasts-2020)
   --model_name MODEL_NAME
                         transformer model name (default: bert-base-uncased))
   --vector_mode VECTOR_MODE
                         vector mode: [create, load]
-  --data_limit DATA_LIMIT
-                        data limit (default: 100)
   --vector_fp VECTOR_FP
                         vector file path (to save if mode=create, to load if mode=load, default: vector.npy)
+  --query_fp QUERY_FP   query file path (default: queries.xml)
+  --search_mode SEARCH_MODE
+                        search mode: [nndescent, hierarchical]
+  --k K                 number of results to return (default: 5)
+  --data_limit DATA_LIMIT
+                        data limit (enter -1 for all, default: 100)
 ```
 
 ## Information

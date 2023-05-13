@@ -50,5 +50,4 @@ def hierarchical_search(data_matrix, xq, k):
     # plt.xlabel("Vector Index")
     # plt.ylabel("Distance")
     # plt.show()
-    print("Closest IDs: ", closest_ids)
     return closest_ids[0]

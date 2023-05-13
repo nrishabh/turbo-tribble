@@ -2,9 +2,11 @@ import argparse
 import os
 import nltk
 from tqdm import tqdm
-from src.data import read_metadata, read_utterances
+from src.data import Query, read_metadata, read_utterances, read_queries
 from src.index import SearchSpaceIndex
 from transformers import BertTokenizer, BertModel
+
+from src.search import SearchModule
 
 try:
     nltk.data.find('tokenizers/punkt')
@@ -44,6 +46,19 @@ def main(args):
     else:
         raise ValueError(f"Invalid vector mode: {args.vector_mode}")
 
+    queries = read_queries(args.query_fp)
+    listQueries = [Query(query) for query in queries[:10]]
+
+    for q in tqdm(listQueries, desc="Vectorizing queries", unit=' queries'):
+        q.vectorize(tokenizer, model)
+
+    s = SearchModule(searchspace)
+    if args.search_mode == 'nndescent':
+        s.nndescent_fit()
+        s.nndescent_search(listQueries, args.k)
+    elif args.search_mode == 'hierarchical':
+        s.hierarchical_search(listQueries, args.k)
+
 
 if __name__ == '__main__':
 
@@ -73,18 +88,39 @@ if __name__ == '__main__':
         default='create'
     )
     parser.add_argument(
-        '--data_limit',
-        type=int,
-        required=False,
-        help='data limit (default: 100)',
-        default=100
-    )
-    parser.add_argument(
         '--vector_fp',
         type=str,
         required=False,
         help='vector file path (to save if mode=create, to load if mode=load, default: vector.npy)',
         default='vector.npy'
+    )
+    parser.add_argument(
+        '--query_fp',
+        type=str,
+        required=True,
+        help='query file path (default: queries.xml)',
+        default='queries.xml'
+    )
+    parser.add_argument(
+        '--search_mode',
+        type=str,
+        required=False,
+        help='search mode: [nndescent, hierarchical]',
+        default='hierarchical'
+    )
+    parser.add_argument(
+        '--k',
+        type=int,
+        required=False,
+        help='number of results to return (default: 5)',
+        default=5
+    )
+    parser.add_argument(
+        '--data_limit',
+        type=int,
+        required=False,
+        help='data limit (enter -1 for all, default: 100)',
+        default=100
     )
 
     args = parser.parse_args()

@@ -6,6 +6,7 @@ import string
 import pandas as pd
 from tqdm import tqdm
 from nltk.corpus import stopwords
+from xml.dom.minidom import parse
 
 
 class SearchSpaceObject():
@@ -36,20 +37,16 @@ class SearchSpaceObject():
 
         for t in text:
 
-            # 1. Tokenization
-            # t = tokenize.sent_tokenize(t)
-            # 2. Convert the t to lowercase
             t = [item.lower() for item in t]
-            # 3. Remove all punctuation
+
             t = [item.translate(str.maketrans('', '', string.punctuation)) for item in t]
-            # 4. Remove all stopwords
+
             t = [item for item in t if item not in stopwords.words('english')]
-            # 5. Remove all digits
+
             t = [item for item in t if not item.isdigit()]
 
             text_items += t
 
-        # 6. Vectorize the text items
         tokens = tokenizer(' '.join(text_items), return_tensors='pt')
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
         model = model.to(device)
@@ -71,7 +68,7 @@ class Query(SearchSpaceObject):
         self.text = text
 
     def vectorize(self, tokenizer: object, model: object):
-        super.vectorize(self.text, tokenizer, model)
+        super().vectorize(self.text, tokenizer, model)
 
 
 class Utterance(SearchSpaceObject):
@@ -130,7 +127,7 @@ def read_utterances(transcripts_dir: str, limit: int = None):
 
     listUtterances = []
 
-    if limit is not None:
+    if limit != -1:
         print("Running in developer mode...")
         print("Limiting the number of utterances to ", limit)
         listTranscriptFiles = listTranscriptFiles[:limit]
@@ -157,3 +154,16 @@ def read_utterances(transcripts_dir: str, limit: int = None):
     print("Total number of utterances: ", len(listUtterances))
 
     return listUtterances
+
+
+def read_queries(query_fp: str):
+
+    data = parse(query_fp)
+
+    queries = data.getElementsByTagName('description')
+
+    results = []
+    for query in queries:
+        results.append(query.firstChild.data)
+
+    return results

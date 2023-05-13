@@ -120,7 +120,7 @@ def read_utterances(transcripts_dir: str, limit: int = None):
     assert (os.path.exists(transcripts_dir)), f"Directory {transcripts_dir} does not exist"
 
     listTranscriptFiles = list()
-    for root, dirs, files in os.walk(r"spotify-podcasts-2020\podcasts-transcripts"):
+    for root, dirs, files in os.walk(transcripts_dir):
         for file in files:
             if file.endswith(".json"):
                 listTranscriptFiles.append(os.path.join(root, file))
